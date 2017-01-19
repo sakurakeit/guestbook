@@ -27,10 +27,7 @@ POST: guestbook/signup
         email	test3@test.com(your email)
         name	name3(your username)
         password	password(your password)
-//3) Log in:
-//    POST: guestbook/oauth/login
-//        email:test2@test.com
-//        password:password
+3) Log in: the same as 1)get token
 --------------------------------------------------------
 4) View list comments:
     GET: guestbook/api/comments
