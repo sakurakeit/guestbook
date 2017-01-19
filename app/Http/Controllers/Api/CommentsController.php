@@ -8,12 +8,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
 use App\Models\Comment;
 use App\Transformers\CommentTransformer;
-//use Illuminate\Validation\Validator;
 use \Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CommentsController extends Controller
 {
+    protected $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -38,12 +43,7 @@ class CommentsController extends Controller
      */
     public function show($id)
     {
-        //comment = Comment::find($id);
         $comment = Comment::findOrFail($id);
-
-        /*return response([
-            "comments" => transform($comment)
-        ]);*/
         return $comment;
     }
 
@@ -56,7 +56,6 @@ class CommentsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
             'message' => 'required|max:255',
         ]);
         if ($validator->fails()) {
@@ -65,12 +64,13 @@ class CommentsController extends Controller
             }
         } else {
             $com = new Comment();
+            $user = $this->request->user();
             $com->parent_id = $request->parent_id;
-            $com->user_id = $request->user_id;
             $com->message = $request->message;
+            $com->user_id = $user->id;
+
             $com->save();
-            return 'Data store';//$this->response->item(transform($model));
-            //return $this->response->item($entity, new OutputTransformer());
+            return 'Comment store';
         }
     }
 
